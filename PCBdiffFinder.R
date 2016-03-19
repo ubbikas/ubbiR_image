@@ -68,6 +68,8 @@ library(shiny)
 ################################ FIDUCIAL FINDING APP #############################################
 ###################################################################################################
 
+setwd("D:/-=Works=-/R/GitHub/ubbiR_image")
+
 
 im <- load.image("fm22.jpg")
 im <- grayscale(im)
@@ -311,12 +313,12 @@ server <- function(input, output) {
     
     isolate({
       return({
-        allPoints()  %>%
-          rowwise() %>%
-          mutate(value = getFidCor(x,y)) %>%
-          as.data.frame() %>%
-          arrange(desc(value)) %>%
-          head(5)
+        value <- apply(allPoints()[,c('x','y')], 
+                       1, 
+                       function(d) getFidCor(d['x'],d['y']))
+        data.frame(allPoints(), value) %>%
+        arrange(desc(value)) %>%
+        head(5)
       })
     })
 
